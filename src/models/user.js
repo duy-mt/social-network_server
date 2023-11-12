@@ -6,10 +6,16 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       // Định nghĩa các quan hệ với các models khác ở đây
+      User.hasMany(models.Post, {
+        foreignKey: 'userId',
+      });
     }
   };
   User.init({
-    username: DataTypes.STRING,
+    username: {
+      type: DataTypes.STRING,
+      unique: true
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,

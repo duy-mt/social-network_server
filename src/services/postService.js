@@ -2,16 +2,16 @@ import { raw } from "body-parser";
 import db from "../models/index";
 
 // Lấy danh sách tất cả người dùng
-const getAllUsers = () => {
+const getAllPosts = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const users = await db.User.findAll({
+      const posts = await db.Post.findAll({
         raw: false,
         attributes:{
           exclude: ['password']
         }
       });
-      resolve({ errCode: 0, errMessage: 'Lấy danh sách người dùng thành công.', data: users });
+      resolve({ errCode: 0, errMessage: 'Lấy danh sách người dùng thành công.', data: posts });
     } catch (error) {
       reject({ errCode: 500, errMessage: 'Lỗi khi lấy danh sách người dùng.' });
     }
@@ -20,103 +20,103 @@ const getAllUsers = () => {
 
 
 // Lấy thông tin của một người dùng theo ID
-const getUserById = (userId) => {
+const getPostById = (postId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await db.User.findByPk(
-        userId, {
+      const post = await db.Post.findByPk(
+        postId, {
           attributes: {
             exclude: ['password'] 
             },
           raw: false
           },
       );
-      console.log(1, user.dataValues);
-      if (user) {
-        resolve({ errCode: 0, errMessage: 'Lấy danh sách người dùng thành công.', data: user.dataValues });
+      console.log(1, post.dataValues);
+      if (post) {
+        resolve({ errCode: 0, errMessage: 'Lấy danh sách người dùng thành công.', data: post.dataValues });
       } else {
         reject({ errCode: 404, errMessage: 'Người dùng không tồn tại.' });
       }
     } catch (error) {
-      console.error('userService - getUserById:', error);
+      console.error('postService - getpostById:', error);
       reject({ errCode: 500, errMessage: 'Lỗi khi lấy thông tin người dùng.' });
     }
   });
 };
 
 // Tạo một người dùng mới
-const createUser = (userData) => {
+const createPost = (postData) => {
   return new Promise(async (resolve, reject) => {
-    const { username, email, password, avatar } = userData;
+    const { postname, email, password, avatar } = postData;
     try {
-      const newUser = await db.User.create(
-        { username:username, 
+      const newpost = await db.Post.create(
+        { postname:postname, 
           email: email, 
           password:password, 
           avartar:avatar 
         });
-        console.log(newUser.dataValues);
-      resolve({ errCode: 0, errMessage: 'Tạo người dùng thành công.', data: newUser.dataValues });
+        console.log(newpost.dataValues);
+      resolve({ errCode: 0, errMessage: 'Tạo người dùng thành công.', data: newpost.dataValues });
     } catch (error) {
-      console.error('userService - createUser:', error);
+      console.error('postService - createpost:', error);
       reject({ errCode: 500, errMessage: 'Lỗi khi tạo người dùng.' });
     }
   });
 };
 
 // Cập nhật thông tin của một người dùng theo ID
-const updateUserById = (userId, userData) => {
+const updatePostById = (postId, postData) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await db.User.findByPk(userId);
+      const post = await db.Post.findByPk(postId);
 
-      if (user) {
-        await db.User.update({ 
-          username: userData.username,
-          email: userData.email, 
-          password: userData.password,
-          avatar: userData.avatar
+      if (post) {
+        await db.post.update({ 
+          postname: postData.postname,
+          email: postData.email, 
+          password: postData.password,
+          avatar: postData.avatar
           },
           {
             where: {
-              id: userId,
+              id: postId,
             },
           }
         );
-        resolve({ errCode: 0, errMessage: 'Cập nhật thông tin người dùng thành công.', data: user });
+        resolve({ errCode: 0, errMessage: 'Cập nhật thông tin người dùng thành công.', data: post });
       } else {
         reject({ errCode: 404, errMessage: 'Người dùng không tồn tại.' });
       }
     } catch (error) {
-      console.error('userService - updateUserById:', error);
+      console.error('postService - updatepostById:', error);
       reject({ errCode: 500, errMessage: 'Lỗi khi cập nhật thông tin người dùng.' });
     }
   });
 };  
 
 // Xóa một người dùng theo ID
-const deleteUserById = (userId) => {
+const deletePostById = (postId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await db.User.findByPk(userId);
-      console.log(user);
-      if (user) {
-        await user.destroy();
+      const post = await db.Post.findByPk(postId);
+      console.log(post);
+      if (post) {
+        await post.destroy();
         resolve({errCode: 0, errMessage: 'Người dùng đã bị xóa thành công.' });
       } else {
         reject({ errCode: 404, errMessage: 'Người dùng không tồn tại.' });
       }
     } catch (error) {
-      console.error('userService - deleteUserById:', error);
+      console.error('postService - deletepostById:', error);
       reject({ errCode: 500, errMessage: 'Lỗi khi xóa người dùng.' });
     }
   });
 };
 
 module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUserById,
-  deleteUserById,
+  getAllPosts,
+  getPostById,
+  createPost,
+  updatePostById,
+  deletePostById,
 };

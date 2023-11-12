@@ -3,11 +3,11 @@ import userService from "../services/userService";
 // Lấy danh sách tất cả người dùng
 const getAllUsers = async (req, res) => {
   try {
-    const data = await userService.getAllUsers;
-    return res.status(data.errCode).json({
+    const data = await userService.getAllUsers();
+    return res.status(200).json({
         errCode: data.errCode,
         message: data.errMessage,
-        user: data.user ? data.user : {}
+        user: data.data ? data.data : {}
     }) 
   } catch (error) {
     console.error(error);
@@ -15,15 +15,17 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+
 // Lấy thông tin của một người dùng theo ID
 const getUserById = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.query.userId;
+  console.log("in controller get user by id");
   try {
-    const data = await userService.getUserById;
-      return res.status(data.errCode).json({
+    const data = await userService.getUserById(userId);
+      return res.status(200).json({
         errCode: data.errCode,
         message: data.errMessage,
-        user: data.user ? data.user : {}
+        user: data.data ? data.data : {}
       }) 
   } catch (error) {
     console.error(error);
@@ -33,13 +35,12 @@ const getUserById = async (req, res) => {
 
 // Tạo một người dùng mới
 const createUser = async (req, res) => {
-  const { username, email, password } = req.body;
   try {
-    const data = await userService.createUser;
-    return res.status(data.errCode).json({
+    const data = await userService.createUser(req.body);
+    return res.status(200).json({
       errCode: data.errCode,
       message: data.errMessage,
-      user: data.newUser ? data.newUser : {}
+      user: data.data ? data.data : {}
     }) 
   } catch (error) {
     console.error(error);
@@ -49,11 +50,16 @@ const createUser = async (req, res) => {
 
 // Cập nhật thông tin của một người dùng theo ID
 const updateUserById = async (req, res) => {
-  const userId = req.params.userId;
-  const { username, email, password } = req.body;
+  const userId = req.query.userId;
+  let body = {}
+  body['username'] = req.body.username;
+  body['email'] = req.body.username;
+  body['password'] = req.body.username;
+  body['avatar'] = req.body.username;
+
   try {
-    const data = await userService.updateUserById;
-    return res.status(data.errCode).json({
+    const data = await userService.updateUserById(userId, body);
+    return res.status(200).json({
       errCode: data.errCode,
       message: data.errMessage,
       user: data.user ? data.user : {}
@@ -66,10 +72,10 @@ const updateUserById = async (req, res) => {
 
 // Xóa một người dùng theo ID
 const deleteUserById = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.query.userId;
   try {
-    const data = await userService.deleteUserById;
-    return res.status(data.errCode).json({
+    const data = await userService.deleteUserById(userId);
+    return res.status(200).json({
       errCode: data.errCode,
       message: data.errMessage,
     }) 

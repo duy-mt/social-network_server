@@ -1,10 +1,15 @@
 require('dotenv').config();
 import express from "express";
+import bodyParser from "body-parser";
 import initWebRoutes from "./routes/web";
+import cors from 'cors';
+
 
 let app = express();
 
-//Config view engine
+app.use(cors({ origin: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // init all web routes
 initWebRoutes(app);
