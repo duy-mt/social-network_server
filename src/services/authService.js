@@ -8,18 +8,21 @@ const loginUser = (username, password) => {
       const user = await db.User.findOne({ where: { email: email } });
 
       if (!user) {
-        reject(new Error('Tên người dùng không tồn tại'));
+        reject({ errCode: 500, errMessage: 'Tên người dùng không tồn tại.' });
+
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        reject(new Error('Mật khẩu không đúng'));
+        reject({ errCode: 500, errMessage: 'Mật khẩu không đúng.' });
+
       }
 
-      resolve(user);
+      resolve({ errCode: 200, errMessage: 'Đăng nhập thành công.', data: user });
     } catch (error) {
-      reject(new Error('Lỗi khi đăng nhập: ' + error.message));
+      reject({ errCode: 500, errMessage: 'Lỗi đăng nhập.' });
+
     }
   });
 };
@@ -29,9 +32,31 @@ const logoutUser = () => {
   return new Promise((resolve, reject) => {
     try {
       // Thực hiện các bước đăng xuất nếu cần
-      resolve();
+      resolve({ errCode: 200, errMessage: 'Đăng xuất thành công.'});
     } catch (error) {
-      reject(new Error('Lỗi khi đăng xuất: ' + error.message));
+      reject({ errCode: 500, errMessage: 'Lỗi đăng xuất.' });
+    }
+  });
+};
+
+// Đăng ký người dùng
+const registerUser = async (username, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+ // Kiểm tra xem tên người dùng đã tồn tại chưa
+    const existingUser = await db.User.findOne({ where: { username: username } });
+    if (existingUser) {
+      reject({ errCode: 404, errMessage: 'Tên người dùng đã tồn tại'});
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+     // Tạo người dùng mới
+    const newUser = await db.User.create({ username: username, password: hashedPassword, email: email, avatar: avatar });
+    resolve({ errCode: 200, errMessage: 'Đăng kí thành công.'});
+
+    } catch(error) {
+      cosole.log(error);
+      reject({ errCode: 500, errMessage: 'Lỗi đăng xuất.' });
+
     }
   });
 };
@@ -39,4 +64,5 @@ const logoutUser = () => {
 module.exports = {
   loginUser,
   logoutUser,
+  registerUser
 };

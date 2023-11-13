@@ -1,10 +1,16 @@
 import express from "express";
 import userController from "../controllers/userController";
 import postController from "../controllers/postController";
+import middleWarePassport from '../middlewares/middlewarePassport';
 
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+    //router ath
+    router.post("/api/login", middleWarePassport.ensureNotAuthenticated(), )
+
+
+
     // router user
     router.get("/api/users", userController.getAllUsers);
     router.get('/api/users/get-user-by-id', userController.getUserById);

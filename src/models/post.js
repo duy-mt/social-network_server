@@ -14,9 +14,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Post.init({
-    title: DataTypes.STRING,
-    content: DataTypes.TEXT,
-    // Thêm trường khác tùy theo yêu cầu
+    title: {
+      type:DataTypes.STRING,
+      allowNull: false
+    },
+    content: {
+      type:DataTypes.TEXT,
+      allowNull: false
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id',
+      },
+    },
   }, {
     sequelize,
     modelName: 'Post',
